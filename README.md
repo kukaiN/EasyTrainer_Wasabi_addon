@@ -14,7 +14,7 @@ https://github.com/derrian-distro/LoRA_Easy_Training_Scripts/tree/80e2c49
 ```
 git clone -b dev https://github.com/derrian-distro/LoRA_Easy_Training_Scripts
 ```
- Then do the basic installing for Derrian EasyTrainer.
+ Then do the basic installing for Derrian EasyTrainer with "install.bat".
 
 2. Then come back to this repo, download the zip or git clone this repo anywhere u like:
 ```
