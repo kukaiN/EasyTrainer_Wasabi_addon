@@ -16,8 +16,10 @@ git clone -b dev https://github.com/derrian-distro/LoRA_Easy_Training_Scripts
 ```
  Then do the basic installing for Derrian EasyTrainer.
 
-2. Then come back to this repo, download the zip or git clone this repo anywhere u like: git clone https://github.com/kukaiN/EasyTrainer_Wasabi_addon
-
+2. Then come back to this repo, download the zip or git clone this repo anywhere u like:
+```
+  git clone https://github.com/kukaiN/EasyTrainer_Wasabi_addon
+```
 3. go into the downloaded repo and copy everything in the changes folder. Then paste it inside the Easytrainer folder. It'll ask you if you want to replace ~7 files, and once you replaced the files the files are properly updated to the same one I'm using.
 
 4. Then you should have a new file "install_matplotlib.bat" in the easytrainer folder, click it to additionally install matplotlib in the Kohya backend.
