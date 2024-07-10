@@ -20,7 +20,7 @@ git clone -b dev https://github.com/derrian-distro/LoRA_Easy_Training_Scripts
 ```
   git clone https://github.com/kukaiN/EasyTrainer_Wasabi_addon
 ```
-3. go into the downloaded repo and copy everything in the "changes" folder. Then paste it inside the Easytrainer folder. It'll ask you if you want to replace ~7 files, and once you replaced the files the files are properly updated to the same one I'm using.
+3. go into the downloaded repo and copy everything in the "changes" folder. Then paste it inside the Easytrainer folder. It'll ask you if you want to replace ~7 files, and replace them with the new version.
 
 <img width="842" alt="Screenshot 2024-07-10 162231" src="https://github.com/kukaiN/EasyTrainer_Wasabi_addon/assets/50426885/e40b3380-e39f-4355-932d-b5479fbf2716">
 
