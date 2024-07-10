@@ -10,8 +10,10 @@ https://github.com/derrian-distro/LoRA_Easy_Training_Scripts/tree/80e2c49
 # Instructions:
 
 1. Downloading Derrian's Easy trainer:
- You can get the latest dev version with: git clone -b dev https://github.com/derrian-distro/LoRA_Easy_Training_Scripts
-
+   You can get the latest dev version with:
+```
+git clone -b dev https://github.com/derrian-distro/LoRA_Easy_Training_Scripts
+```
  Then do the basic installing for Derrian EasyTrainer.
 
 2. Then come back to this repo, download the zip or git clone this repo anywhere u like: git clone https://github.com/kukaiN/EasyTrainer_Wasabi_addon
