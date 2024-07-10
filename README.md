@@ -1,7 +1,7 @@
 ## EasyTrainer_Wasabi_addon
  Small changes to the kohya backend and Easytrainer frontend that adds features to easy trainer.
 
- You will need to install Lora_EasyTrainer first. (I recommend the dev branch, instructions below).
+ You will need to install Lora_EasyTrainer first. (I recommend the dev branch, instructions below). If you already have a working install, Maybe makee a separate folder (at least for now, 7/10/24).
 
 This is the specific version of EasyTrainer I am using (it's the latest version available, when I'm writing this, 7/10/24).
 https://github.com/derrian-distro/LoRA_Easy_Training_Scripts/tree/80e2c49
