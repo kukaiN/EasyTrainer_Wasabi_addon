@@ -9,8 +9,8 @@ https://github.com/derrian-distro/LoRA_Easy_Training_Scripts/tree/80e2c49
 
 # Instructions:
 
-1. Downloading Derrian's Easy trainer:
-   You can get the latest dev version with:
+1. Download Derrian's Easy trainer to your perfered location:
+   Go to your perferred location, type cmd in the folder address bar, get the latest dev version with:
 ```
 git clone -b dev https://github.com/derrian-distro/LoRA_Easy_Training_Scripts
 ```
