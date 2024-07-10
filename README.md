@@ -26,3 +26,15 @@ git clone -b dev https://github.com/derrian-distro/LoRA_Easy_Training_Scripts
 
 Instalization is complete, you start the app normally with the "run.bat"
 
+## Added/modded Features:
+
+- Better Wandb logging
+- ### Under Optimization tab
+ - Time Attention mechanism
+ - Debiased Estimation loss
+  - Max constraint on Debiased Estimation
+ - Turn off/on TE2 training
+
+
+# Acknowledgements:
+Time Attention is a modification from here: https://github.com/Anzhc/Timestep-Attention-and-other-shenanigans
