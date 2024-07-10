@@ -27,6 +27,7 @@ git clone -b dev https://github.com/derrian-distro/LoRA_Easy_Training_Scripts
 Instalization is complete, you start the app normally with the "run.bat"
 
 If everything goes as planned, you should see a new section under the optimizer args tab, like the image below:
+
 ![Screenshot 2024-07-10 161417_raw](https://github.com/kukaiN/EasyTrainer_Wasabi_addon/assets/50426885/a7f6f634-ce4f-418a-9f22-14aa5d859386)
 
 
