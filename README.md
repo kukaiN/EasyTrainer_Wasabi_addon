@@ -1,7 +1,7 @@
 ## EasyTrainer_Wasabi_addon
  Small changes to the kohya backend and Easytrainer frontend that adds features to easy trainer.
 
- You will need to install Lora_EasyTrainer first. (I recommend the dev branch, instructions below).
+ You will need to install Lora_EasyTrainer first. (I recommend the dev branch, instructions below). If you already have a working install, Maybe makee a separate folder (at least for now, 7/10/24).
 
 This is the specific version of EasyTrainer I am using (it's the latest version available, when I'm writing this, 7/10/24).
 https://github.com/derrian-distro/LoRA_Easy_Training_Scripts/tree/80e2c49
@@ -14,7 +14,7 @@ https://github.com/derrian-distro/LoRA_Easy_Training_Scripts/tree/80e2c49
 ```
 git clone -b dev https://github.com/derrian-distro/LoRA_Easy_Training_Scripts
 ```
- Then do the basic installing for Derrian EasyTrainer.
+ Then do the basic installing for Derrian EasyTrainer with "install.bat".
 
 2. Then come back to this repo, download the zip or git clone this repo anywhere u like:
 ```
@@ -26,3 +26,15 @@ git clone -b dev https://github.com/derrian-distro/LoRA_Easy_Training_Scripts
 
 Instalization is complete, you start the app normally with the "run.bat"
 
+## Added/modded Features:
+### Minor Changes
+  - Better Wandb logging
+### Under Optimization tab
+  - Time Attention mechanism
+  - Debiased Estimation loss
+    - Max constraint on Debiased Estimation
+  - Turn off/on TE2 training
+
+
+# Acknowledgements:
+Time Attention is a modification from here: https://github.com/Anzhc/Timestep-Attention-and-other-shenanigans
