@@ -27,8 +27,8 @@ git clone -b dev https://github.com/derrian-distro/LoRA_Easy_Training_Scripts
 Instalization is complete, you start the app normally with the "run.bat"
 
 ## Added/modded Features:
-
-- Better Wandb logging
+### Minor Changes
+  - Better Wandb logging
 ### Under Optimization tab
   - Time Attention mechanism
   - Debiased Estimation loss
