@@ -29,11 +29,11 @@ Instalization is complete, you start the app normally with the "run.bat"
 ## Added/modded Features:
 
 - Better Wandb logging
-- ### Under Optimization tab
- - Time Attention mechanism
- - Debiased Estimation loss
-  - Max constraint on Debiased Estimation
- - Turn off/on TE2 training
+### Under Optimization tab
+  - Time Attention mechanism
+  - Debiased Estimation loss
+    - Max constraint on Debiased Estimation
+  - Turn off/on TE2 training
 
 
 # Acknowledgements:
