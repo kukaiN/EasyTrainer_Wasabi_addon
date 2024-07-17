@@ -639,6 +639,8 @@ class NetworkTrainer:
             tag_frequency = {}  # merge tag frequency for metadata editor
             dataset_dirs_info = {}  # merge subset dirs for metadata editor
 
+            token_sep = ""
+            
             for dataset in train_dataset_group.datasets:
                 is_dreambooth_dataset = isinstance(dataset, DreamBoothDataset)
                 dataset_metadata = {
@@ -670,6 +672,8 @@ class NetworkTrainer:
                         "caption_prefix": subset.caption_prefix,
                         "caption_suffix": subset.caption_suffix,
                     }
+                    if subset.keep_tokens_separator:
+                        token_sep = subset.keep_tokens_separator
 
                     image_dir_or_metadata_file = None
                     if subset.image_dir:
@@ -718,13 +722,17 @@ class NetworkTrainer:
                     tag_frequency[ds_dir_name] = ds_freq_for_dir
 
             if True:
+                
                 def filter_dict(tag_freq, subset_name, freq_filter_percent=0.05):
                     if subset_name in dataset_dirs_info: #if subset info is properly stored
                         data_count = dataset_dirs_info[subset_name]["img_count"] # no repeats accounted
                     else: # if no subset is found, fall back to using max value
                         data_count = max([int(tag_f) for tag_f in tag_freq.values()])
                     filtered_freq = int((freq_filter_percent * int(data_count))+1)
-                    new_tag_freq = {k:v for k, v in tag_freq.items() if v > filtered_freq}
+                    if token_sep:
+                        new_tag_freq = {k:v for k, v in tag_freq.items() if v > filtered_freq and k != token_sep}
+                    else:
+                        new_tag_freq = {k:v for k, v in tag_freq.items() if v > filtered_freq}
                     return new_tag_freq
                 
                 for subset_name, tag_freq in dataset.tag_frequency.items():
