@@ -494,6 +494,8 @@ def apply_masked_loss(loss, batch):
 
     # resize to the same size as the loss
     mask_image = torch.nn.functional.interpolate(mask_image, size=loss.shape[2:], mode="area")
+    
+    # where we convert the range from [-1, 1] to [0, 1]
     mask_image = mask_image / 2 + 0.5
     loss = loss * mask_image
     return loss
@@ -685,7 +687,6 @@ def timestep_attention(loss_map, b_size, device, max_timesteps=1000, default_los
                      "AuC/area [80-100]": area_under_curve[4]
                     }
         
-        
     else: # ignore this case (wasabi)
         # Generate log-normal samples for timesteps as the fallback
         mean, std = 0.00, 1.00
@@ -693,33 +694,32 @@ def timestep_attention(loss_map, b_size, device, max_timesteps=1000, default_los
         normalized_samples = lognorm_samples / lognorm_samples.max()
         skewed_timesteps = (normalized_samples * (max_timesteps - 1)).long()
 
-    # Log the adjusted probabilities
-    #dir_name = f"H:\\TimestepAttention\\run{run_number}"
-    #if not os.path.exists(dir_name):
-    #    os.makedirs(dir_name)
-    # List existing files and find the next available file number
-    #existing_files = [f for f in os.listdir(dir_name) if os.path.isfile(os.path.join(dir_name, f)) and 'run_probabilities_' in f]
-    #highest_num = 0
-    #for file_name in existing_files:
-    #    parts = file_name.replace('run_probabilities_', '').split('.')
-    #    try:
-    #        num = int(parts[0])
-    #        if num > highest_num:
-    #            highest_num = num
-    #    except ValueError:
-            # This handles the case where the file name does not end with a number
-    #        continue
+        # Log the adjusted probabilities
+        #dir_name = f"H:\\TimestepAttention\\run{run_number}"
+        #if not os.path.exists(dir_name):
+        #    os.makedirs(dir_name)
+        # List existing files and find the next available file number
+        #existing_files = [f for f in os.listdir(dir_name) if os.path.isfile(os.path.join(dir_name, f)) and 'run_probabilities_' in f]
+        #highest_num = 0
+        #for file_name in existing_files:
+        #    parts = file_name.replace('run_probabilities_', '').split('.')
+        #    try:
+        #        num = int(parts[0])
+        #        if num > highest_num:
+        #            highest_num = num
+        #    except ValueError:
+                # This handles the case where the file name does not end with a number
+        #        continue
 
-    # Determine the filename for the new log
-    #new_file_num = highest_num + 1
-    #file_out = os.path.join(dir_name, f"run_probabilities_{new_file_num}.txt")
+        # Determine the filename for the new log
+        #new_file_num = highest_num + 1
+        #file_out = os.path.join(dir_name, f"run_probabilities_{new_file_num}.txt")
 
-    #adjusted_probabilities_print = adjusted_probabilities.cpu().tolist()
-    #timesteps_probs_str = ', '.join(map(str, adjusted_probabilities_print))
-    #with open(file_out, 'w') as file:
-    #    file.write(timesteps_probs_str + '\n')
-    
-    
+        #adjusted_probabilities_print = adjusted_probabilities.cpu().tolist()
+        #timesteps_probs_str = ', '.join(map(str, adjusted_probabilities_print))
+        #with open(file_out, 'w') as file:
+        #    file.write(timesteps_probs_str + '\n')
+
     
     return skewed_timesteps, stat_dict
 

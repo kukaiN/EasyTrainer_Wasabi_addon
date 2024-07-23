@@ -26,7 +26,7 @@ class Ui_optimizer_ui(object):
     def setupUi(self, optimizer_ui):
         if not optimizer_ui.objectName():
             optimizer_ui.setObjectName(u"optimizer_ui")
-        optimizer_ui.resize(571, 357)
+        optimizer_ui.resize(571, 386)
         self.verticalLayout = QVBoxLayout(optimizer_ui)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -329,6 +329,11 @@ class Ui_optimizer_ui(object):
 
         self.formLayout_4.setWidget(4, QFormLayout.LabelRole, self.disable_te2)
 
+        self.scale_ip_gamma = QCheckBox(self.optimizer_tab_main)
+        self.scale_ip_gamma.setObjectName(u"scale_ip_gamma")
+
+        self.formLayout_4.setWidget(5, QFormLayout.LabelRole, self.scale_ip_gamma)
+
 
         self.gridLayout.addLayout(self.formLayout_4, 2, 0, 1, 2)
 
@@ -348,7 +353,7 @@ class Ui_optimizer_ui(object):
         self.scrollArea.setWidgetResizable(True)
         self.optimizer_item_widget = QWidget()
         self.optimizer_item_widget.setObjectName(u"optimizer_item_widget")
-        self.optimizer_item_widget.setGeometry(QRect(0, 0, 551, 302))
+        self.optimizer_item_widget.setGeometry(QRect(0, 0, 73, 16))
         self.verticalLayout_3 = QVBoxLayout(self.optimizer_item_widget)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.scrollArea.setWidget(self.optimizer_item_widget)
@@ -486,6 +491,10 @@ class Ui_optimizer_ui(object):
         self.disable_te2.setToolTip(QCoreApplication.translate("optimizer_ui", u"<html><head/><body><p>HIGHLY EXPERIMENTAL</p><p><br/></p><p>This is something I wanted to try and see if it improves the quality of the lora.  Idea being TE2 is fucked beyond repair and doesn't help SDXL (at least for pony and other XL models) and so I thought of instead of propagating loss to TE2 and trying to do something, I wanted to test if it's better to just ignore it<br/><br/>I will post any findings but please feel free to share any findings (or bugs, cause I'm not 100% sure with this modification). </p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.disable_te2.setText(QCoreApplication.translate("optimizer_ui", u"Disable TE2 training", None))
+#if QT_CONFIG(tooltip)
+        self.scale_ip_gamma.setToolTip(QCoreApplication.translate("optimizer_ui", u"this adds a weight to the ip gamma that is max(1, sqrt(SNR)), basically lowering the effects for high timesteps and keeping the ip_gamma_value for low timesteps", None))
+#endif // QT_CONFIG(tooltip)
+        self.scale_ip_gamma.setText(QCoreApplication.translate("optimizer_ui", u"Scale IP noise gamma with SNR", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.optimizer_tab_main), QCoreApplication.translate("optimizer_ui", u"Main Args", None))
         self.add_opt_button.setText(QCoreApplication.translate("optimizer_ui", u"Add Optimizer Arg", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.optimizer_tab_args), QCoreApplication.translate("optimizer_ui", u"Optional Args", None))

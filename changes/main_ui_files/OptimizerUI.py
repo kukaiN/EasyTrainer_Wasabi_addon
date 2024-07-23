@@ -115,6 +115,9 @@ class OptimizerWidget(BaseWidget):
         self.widget.disable_te2.clicked.connect(
             lambda x: self.edit_args("disable_te2", x, True)
         )
+        self.widget.scale_ip_gamma.clicked.connect(
+            lambda x: self.edit_args("scale_ip_gamma_noise", x, True)
+        )
         
         self.widget.add_opt_button.clicked.connect(self.add_optimizer_arg)
 
@@ -363,6 +366,10 @@ class OptimizerWidget(BaseWidget):
         self.widget.debias_limit_val.setValue(float(args.get("debias_limit_val", 7)))
         self.widget.save_lossmap.setChecked(args.get("save_lossmap", False))
         self.widget.disable_te2.setChecked(args.get("disable_te2", False))
+        self.widget.scale_ip_gamma.setChecked(args.get("scale_ip_gamma_noise", False))
+        
+    
+        
         
         self.enable_disable_debias_limit(self.widget.debias_limit_check.isChecked())
         

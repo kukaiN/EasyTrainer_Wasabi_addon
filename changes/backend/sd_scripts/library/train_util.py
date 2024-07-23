@@ -1172,6 +1172,7 @@ class BaseDataset(torch.utils.data.Dataset):
         images = []
         original_sizes_hw = []
         crop_top_lefts = []
+        img_keys = []
         target_sizes_hw = []
         flippeds = []  # 変数名が微妙
         text_encoder_outputs1_list = []
@@ -1249,6 +1250,7 @@ class BaseDataset(torch.utils.data.Dataset):
 
             images.append(image)
             latents_list.append(latents)
+            img_keys.append(image_key)
 
             target_size = (image.shape[2], image.shape[1]) if image is not None else (latents.shape[2] * 8, latents.shape[1] * 8)
 
@@ -1340,8 +1342,9 @@ class BaseDataset(torch.utils.data.Dataset):
         else:
             images = None
         example["images"] = images
-
+        
         example["latents"] = torch.stack(latents_list) if latents_list[0] is not None else None
+        
         example["captions"] = captions
 
         example["original_sizes_hw"] = torch.stack([torch.LongTensor(x) for x in original_sizes_hw])
@@ -4984,7 +4987,7 @@ def get_noise_noisy_latents_and_timesteps(args, noise_scheduler, latents):
     return noise, noisy_latents, timesteps, huber_c
 
 # passed (args, noise_scheduler, latents, current_step, args.max_train_steps, loss_for_timesteps, loss_map, current_timesteps, run_number)
-def get_noise_noisy_latents_and_timesteps_TA(args, noise_scheduler, latents, current_step, loss_map):#current_timesteps,
+def get_noise_noisy_latents_and_timesteps_TA(args, noise_scheduler, latents, current_step, loss_map, use_TA=False):#current_timesteps,
     # Sample noise that we'll add to the latents
     noise = torch.randn_like(latents, device=latents.device)
     if args.noise_offset: # custom noise function, more elaborate with random strength
@@ -5029,11 +5032,15 @@ def get_noise_noisy_latents_and_timesteps_TA(args, noise_scheduler, latents, cur
 
     # shouldn't be here?
     #loss_map = update_loss_map_ema(loss_map, loss_for_timesteps, current_timesteps)
+    stat_dict ={}
+    huber_c = 1
     
-    
-    timesteps, stat_dict = timestep_attention(loss_map, b_size, device=latents.device, max_timesteps=max_timestep, default_loss=0.2)
+    if use_TA:
+        timesteps, stat_dict = timestep_attention(loss_map, b_size, device=latents.device, max_timesteps=max_timestep, default_loss=0.2)
+    else:
+        timesteps, huber_c = get_timesteps_and_huber_c(args, min_timestep, max_timestep, noise_scheduler, b_size, latents.device)
+        timesteps = timesteps.long()
     #current_timesteps = timesteps
-
     #if lognorm_sampling:
     #mean = 0.00
     #if current_step.value > (max_step*0.8):
@@ -5070,7 +5077,7 @@ def get_noise_noisy_latents_and_timesteps_TA(args, noise_scheduler, latents, cur
 
     # huber_c is 1 for non-huber modes
     #timesteps, huber_c = get_timesteps_and_huber_c(args, timesteps, noise_scheduler, b_size, latents.device)
-    huber_c = 1
+   
     #timesteps = timesteps.long() # redundant, same line in huber_c function
     
     # Add noise to the latents according to the noise magnitude at each timestep
@@ -5083,6 +5090,23 @@ def get_noise_noisy_latents_and_timesteps_TA(args, noise_scheduler, latents, cur
             max_str = 1.5
             random_str = random.uniform(min_str, max_str)
             strength = args.ip_noise_gamma * random_str
+            
+            if args.scale_ip_gamma_noise:
+                # similar to min SNR and debias method, but we don't divide
+                # idea is to scale the ip_gamma error based on snr, capped between 1x ~ 0x
+                # for early timesteps t, T=0~270 (when SNR>1) is capped at 1
+                # then for all subsequent t, T=270~1000, the ip_gamma term decreases
+                
+                #this way, when zsnr is turned on, this will make the added noise=0, 
+                # which should make ip_gamma blend better with zsnr method
+                
+                snr = torch.stack([noise_scheduler.all_snr[t] for t in timesteps])
+                sqrt_snr = torch.sqrt(snr)
+                min_sqrt_snr1 = torch.minimum(sqrt_snr, torch.full_like(snr, 1))
+                
+                strength = (strength *  min_sqrt_snr1).float().to(latents.device)
+                strength = strength.view(-1, 1, 1, 1)
+            
         noisy_latents = noise_scheduler.add_noise(latents, noise + strength * torch.randn_like(latents), timesteps)
     else:
         noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)

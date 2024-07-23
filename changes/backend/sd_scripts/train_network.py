@@ -873,23 +873,32 @@ class NetworkTrainer:
                 "huber_c": args.huber_c,
                 }
             for list_arg_name, list_args in zip(["network_arg_", "optim_arg_"], ["network_args", "optimizer_args"]):
-                if hasattr(args, list_args): # this adds the extra network arg for special loras (locon, lyco, etc)
-                    for i,n_arg in enumerate(getattr(args, list_args)):
-                        if "=" in n_arg: # if an "=" is in the string
-                            split_arg = n_arg.split("=", 1)
-                            train_config[split_arg[0]] = split_arg[1]
-                        else: # exception thingy, just in case there's an arg with no equal sign
-                            train_config[list_arg_name+str(i)] = n_arg
-            for bool_args in ["time_attention", "disable_te2"]:
+                if hasattr(args, list_args) and getattr(args, list_args): # this adds the extra network arg for special loras (locon, lyco, etc)
+                        for i,n_arg in enumerate(getattr(args, list_args)):
+                            if "=" in n_arg: # if an "=" is in the string
+                                split_arg = n_arg.split("=", 1)
+                                train_config[split_arg[0]] = split_arg[1]
+                            else: # exception thingy, just in case there's an arg with no equal sign
+                                train_config[list_arg_name+str(i)] = n_arg
+            for bool_args in ["time_attention", "disable_te2", "scale_ip_gamma_noise"]:
                 if hasattr(args, bool_args):
                     train_config[bool_args] = getattr(args, bool_args)
+                    metadata[bool_args] = str(getattr(args, bool_args))
                 else:
                     train_config[bool_args] = False
-                
+            for num_args in ["debias_limit_val", "scale_weight_norms"]:
+                if hasattr(args, num_args):
+                    train_config[num_args] = getattr(args, num_args)
+                    metadata[num_args] = str(getattr(args, num_args))
+                else:
+                    pass
+                    # hard to define a right value when empty
+            if args.scale_ip_gamma_noise and not args.ip_noise_gamma:
+                accelerator.print("scaling ip_gamma_noise is not used since Ip_noise_gamma was not set")
             accelerator.init_trackers(
                 "network_train" if args.log_tracker_name is None else args.log_tracker_name, config=train_config, init_kwargs=init_kwargs
             )
-        
+
         loss_recorder = train_util.LossRecorder()
         del train_dataset_group
 
@@ -995,13 +1004,11 @@ class NetworkTrainer:
                     #noise, noisy_latents, timesteps, huber_c = train_util.get_noise_noisy_latents_and_timesteps(
                     #    args, noise_scheduler, latents
                     #)
-                    if time_attention:
-                        noise, noisy_latents, timesteps, huber_c, stat_dict = train_util.get_noise_noisy_latents_and_timesteps_TA(args, noise_scheduler, latents, real_global_step, loss_map) 
-                    else:
-                        noise, noisy_latents, timesteps, huber_c = train_util.get_noise_noisy_latents_and_timesteps(args, noise_scheduler, latents)
+                    
+                    noise, noisy_latents, timesteps, huber_c, stat_dict = train_util.get_noise_noisy_latents_and_timesteps_TA(args, noise_scheduler, latents, real_global_step, loss_map, use_TA=time_attention)
+                    #noise, noisy_latents, timesteps, huber_c = train_util.get_noise_noisy_latents_and_timesteps(args, noise_scheduler, latents)
                     noisy_latents = noisy_latents.to(weight_dtype)  # TODO check why noisy_latents is not weight_dtype
 
-                        
                     # ensure the hidden state will require grad
                     if args.gradient_checkpointing:
                         for x in noisy_latents:
@@ -1028,6 +1035,7 @@ class NetworkTrainer:
                     else:
                         target = noise
 
+                    # for l2 it is loss = torch.nn.functional.mse_loss(model_pred, target, reduction=reduction)
                     loss = train_util.conditional_loss(
                         noise_pred.float(), target.float(), reduction="none", loss_type=args.loss_type, huber_c=huber_c
                     )
@@ -1037,7 +1045,9 @@ class NetworkTrainer:
 
                     loss_weights = batch["loss_weights"]  # 各sampleごとのweight
                     loss = loss * loss_weights
-
+                    
+                    
+                    
                     if args.min_snr_gamma:
                         loss = apply_snr_weight(loss, timesteps, noise_scheduler, args.min_snr_gamma, args.v_parameterization)
                     if args.scale_v_pred_loss_like_noise_pred:
@@ -1078,6 +1088,8 @@ class NetworkTrainer:
                                 ax.grid(True)
                                 accelerator.log({"plot/hist":wandb.Image(fig)}, step = global_step)
                                 plt.cla() # clear fig in axes
+                    
+                    
                     loss = loss.mean()  # 平均なのでbatch_sizeで割る必要なし
 
                     accelerator.backward(loss)

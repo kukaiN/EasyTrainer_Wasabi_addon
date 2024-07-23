@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>571</width>
-    <height>357</height>
+    <height>386</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -617,6 +617,16 @@
            </property>
           </widget>
          </item>
+         <item row="5" column="0">
+          <widget class="QCheckBox" name="scale_ip_gamma">
+           <property name="toolTip">
+            <string>this adds a weight to the ip gamma that is max(1, sqrt(SNR)), basically lowering the effects for high timesteps and keeping the ip_gamma_value for low timesteps</string>
+           </property>
+           <property name="text">
+            <string>Scale IP noise gamma with SNR</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -646,8 +656,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>551</width>
-            <height>302</height>
+            <width>73</width>
+            <height>16</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3"/>
