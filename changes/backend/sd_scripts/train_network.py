@@ -893,7 +893,7 @@ class NetworkTrainer:
                 else:
                     pass
                     # hard to define a right value when empty
-            if args.scale_ip_gamma_noise and not args.ip_noise_gamma:
+            if hasattr(args, "scale_ip_gamma_noise") and args.scale_ip_gamma_noise and not args.ip_noise_gamma:
                 accelerator.print("scaling ip_gamma_noise is not used since Ip_noise_gamma was not set")
             accelerator.init_trackers(
                 "network_train" if args.log_tracker_name is None else args.log_tracker_name, config=train_config, init_kwargs=init_kwargs
