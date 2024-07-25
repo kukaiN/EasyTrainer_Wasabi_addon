@@ -5091,7 +5091,7 @@ def get_noise_noisy_latents_and_timesteps_TA(args, noise_scheduler, latents, cur
             random_str = random.uniform(min_str, max_str)
             strength = args.ip_noise_gamma * random_str
             
-            if args.scale_ip_gamma_noise:
+            if hasattr(args, "scale_ip_gamma_noise") and args.scale_ip_gamma_noise:
                 # similar to min SNR and debias method, but we don't divide
                 # idea is to scale the ip_gamma error based on snr, capped between 1x ~ 0x
                 # for early timesteps t, T=0~270 (when SNR>1) is capped at 1
